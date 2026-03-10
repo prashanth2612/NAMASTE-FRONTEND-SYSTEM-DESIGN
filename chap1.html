@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 1: Scale From Zero to Millions of Users</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c14;
+    --surface: #0e1520;
+    --surface2: #131c2e;
+    --border: #1e2d45;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --accent4: #10b981;
+    --text: #e2eaf6;
+    --muted: #6b8aad;
+    --mono: 'Space Mono', monospace;
+    --display: 'Syne', sans-serif;
+    --body: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 24px 120px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 80px 0 60px;
+    position: relative;
+  }
+
+  .chapter-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .chapter-label::before, .chapter-label::after {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+
+  .hero h1 {
+    font-family: var(--display);
+    font-size: clamp(32px, 6vw, 58px);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 24px;
+  }
+
+  .hero-quote {
+    font-family: var(--body);
+    font-weight: 300;
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 540px;
+    margin: 0 auto 40px;
+    font-style: italic;
+    border-left: 2px solid var(--accent2);
+    padding-left: 20px;
+    text-align: left;
+  }
+
+  .stat-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-family: var(--mono);
+    font-size: 22px;
+    color: var(--accent);
+    font-weight: 700;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* SECTIONS */
+  .section {
+    margin: 56px 0;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .section-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .icon-blue { background: rgba(0,229,255,0.12); }
+  .icon-purple { background: rgba(124,58,237,0.15); }
+  .icon-amber { background: rgba(245,158,11,0.12); }
+  .icon-green { background: rgba(16,185,129,0.12); }
+  .icon-red { background: rgba(239,68,68,0.12); }
+  .icon-pink { background: rgba(236,72,153,0.12); }
+
+  .section-title {
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* STAGE CARDS */
+  .stage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 600px) { .stage-grid { grid-template-columns: 1fr; } }
+
+  .stage-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .stage-card:hover { border-color: var(--accent); }
+  .stage-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .stage-card:hover::before { opacity: 1; }
+
+  .stage-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .stage-card h3 {
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+
+  /* CODE / DIAGRAM */
+  .diagram {
+    background: #050810;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #8fbaff;
+    line-height: 1.8;
+    overflow-x: auto;
+    margin: 16px 0;
+    white-space: pre;
+  }
+  .diagram .accent { color: var(--accent); }
+  .diagram .dim { color: #3a5070; }
+
+  /* FLOW STEPS */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 16px 0;
+  }
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .flow-step:last-child { border-bottom: none; }
+  .flow-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(0,229,255,0.08);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* COMPARISON TABLE */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  @media (max-width: 560px) { .compare-grid { grid-template-columns: 1fr; } }
+
+  .compare-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .compare-card.good { border-color: rgba(16,185,129,0.3); }
+  .compare-card.bad { border-color: rgba(239,68,68,0.2); }
+
+  .compare-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .compare-label.green { color: var(--accent4); }
+  .compare-label.red { color: #f87171; }
+  .compare-label.blue { color: var(--accent); }
+  .compare-label.amber { color: var(--accent3); }
+
+  .compare-card h3 {
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #fff;
+  }
+
+  /* TABLE */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 16px 0;
+  }
+  .data-table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    color: #b8cde0;
+    vertical-align: top;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(0,229,255,0.03); }
+  .data-table td:first-child {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent3);
+    white-space: nowrap;
+  }
+
+  /* TAG PILLS */
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin: 2px 3px 2px 0;
+  }
+  .tag-blue { background: rgba(0,229,255,0.1); color: var(--accent); border: 1px solid rgba(0,229,255,0.2); }
+  .tag-purple { background: rgba(124,58,237,0.1); color: #a78bfa; border: 1px solid rgba(124,58,237,0.25); }
+  .tag-amber { background: rgba(245,158,11,0.1); color: var(--accent3); border: 1px solid rgba(245,158,11,0.2); }
+  .tag-green { background: rgba(16,185,129,0.1); color: var(--accent4); border: 1px solid rgba(16,185,129,0.2); }
+
+  /* CALLOUT */
+  .callout {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent3);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 13.5px;
+    color: #c8d8e8;
+  }
+  .callout strong { color: var(--accent3); }
+
+  .callout.success { border-left-color: var(--accent4); }
+  .callout.success strong { color: var(--accent4); }
+  .callout.info { border-left-color: var(--accent); }
+  .callout.info strong { color: var(--accent); }
+
+  /* SUMMARY CHECKLIST */
+  .checklist {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+  @media (max-width: 560px) { .checklist { grid-template-columns: 1fr; } }
+
+  .checklist li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: #b8cde0;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .checklist li:hover {
+    border-color: var(--accent4);
+    background: rgba(16,185,129,0.05);
+  }
+  .check-icon {
+    width: 22px;
+    height: 22px;
+    background: rgba(16,185,129,0.12);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    color: var(--accent4);
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 48px 0;
+  }
+
+  /* REFERENCE */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .ref-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: #b8cde0;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .ref-card:hover {
+    border-color: var(--accent);
+    background: rgba(0,229,255,0.04);
+    color: var(--accent);
+  }
+  .ref-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  /* INLINE CODE */
+  code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: rgba(0,229,255,0.07);
+    color: var(--accent);
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  p { color: #9ab3cc; margin-bottom: 10px; }
+
+  li { color: #9ab3cc; margin-left: 16px; margin-bottom: 6px; }
+
+  .section > p:first-of-type { margin-top: -8px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="chapter-label">Chapter 01 &nbsp;·&nbsp; System Design Interview</div>
+    <h1>Scale From Zero<br>to Millions of Users</h1>
+    <p class="hero-quote">
+      Designing a system that supports millions of users is challenging — it requires continuous refinement and endless improvement.
+    </p>
+    <div class="stat-bar">
+      <div class="stat"><span class="stat-num">8</span><span class="stat-label">Core Concepts</span></div>
+      <div class="stat"><span class="stat-num">3</span><span class="stat-label">Architecture Stages</span></div>
+      <div class="stat"><span class="stat-num">∞</span><span class="stat-label">Scale Potential</span></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 1: Architecture Evolution -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🏗️</div>
+      <h2 class="section-title">Evolution of System Architecture</h2>
+    </div>
+
+    <div class="stage-grid">
+      <div class="stage-card">
+        <div class="stage-badge">Stage 1</div>
+        <h3>Single Server Setup</h3>
+        <p>Everything runs on one server: web app, database, and cache. Simple, but fragile.</p>
+        <div class="diagram">User → DNS → IP
+     ↓
+Web Server
+  ├── Database
+  └── Cache</div>
+        <p style="margin-top:10px;font-size:13px;">Request flow: DNS lookup → HTTP request → HTML or JSON response.</p>
+      </div>
+
+      <div class="stage-card">
+        <div class="stage-badge">Stage 2</div>
+        <h3>Separate Web & DB Servers</h3>
+        <p>Web and database tiers are split. Load balancer distributes traffic across multiple web servers.</p>
+        <div class="diagram">User → Load Balancer
+    ├── Web Server 1
+    └── Web Server 2
+           ↓
+   Master DB (writes)
+   Slave DBs  (reads)</div>
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="flow-step"><span class="flow-num">1</span><div>User accesses via domain name (e.g., <code>api.mysite.com</code>)</div></div>
+      <div class="flow-step"><span class="flow-num">2</span><div>DNS returns IP address to browser or mobile app</div></div>
+      <div class="flow-step"><span class="flow-num">3</span><div>HTTP request is sent to the web server</div></div>
+      <div class="flow-step"><span class="flow-num">4</span><div>Web server returns HTML pages or JSON API responses</div></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 2: Database -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🗄️</div>
+      <h2 class="section-title">Database Selection</h2>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-label blue">Relational — SQL</div>
+        <h3>Structured & Proven</h3>
+        <p>MySQL, PostgreSQL, Oracle. Store data in tables and rows. Support JOIN operations. 40+ years of battle-tested usage.</p>
+        <div style="margin-top:12px;">
+          <span class="tag tag-blue">MySQL</span>
+          <span class="tag tag-blue">PostgreSQL</span>
+          <span class="tag tag-blue">Oracle</span>
+        </div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-label purple">Non-Relational — NoSQL</div>
+        <h3>Flexible & Scalable</h3>
+        <p>CouchDB, Cassandra, DynamoDB, Neo4j. Four types: key-value, graph, column, and document stores.</p>
+        <div style="margin-top:12px;">
+          <span class="tag tag-purple">Key-Value</span>
+          <span class="tag tag-purple">Graph</span>
+          <span class="tag tag-purple">Column</span>
+          <span class="tag tag-purple">Document</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>When to choose NoSQL:</strong> Super-low latency requirements, unstructured or non-relational data, serialization-only needs (JSON, XML, YAML), or storing truly massive datasets.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 3: Scaling -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-amber">⚖️</div>
+      <h2 class="section-title">Vertical vs Horizontal Scaling</h2>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Vertical (Scale Up)</th>
+          <th>Horizontal (Scale Out)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>What</td><td>Add more CPU/RAM to one server</td><td>Add more servers</td></tr>
+        <tr><td>Pros</td><td>Simple setup</td><td>No hard limit, highly available</td></tr>
+        <tr><td>Cons</td><td>Hard ceiling, single point of failure</td><td>More complex to manage</td></tr>
+        <tr><td>Best for</td><td>Low traffic, simple setups</td><td>Large scale applications</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 4: Load Balancer -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-blue">⚡</div>
+      <h2 class="section-title">Load Balancer</h2>
+    </div>
+
+    <p>Evenly distributes incoming traffic across web servers. Uses <strong>private IPs</strong> between itself and web servers for security.</p>
+
+    <div class="diagram">              [Public IP]
+User ──────→ Load Balancer
+             /            \
+   [Private IP]        [Private IP]
+   Web Server 1        Web Server 2</div>
+
+    <div class="compare-grid">
+      <div class="compare-card good">
+        <div class="compare-label green">Benefit</div>
+        <h3>No Single Point of Failure</h3>
+        <p>If Server 1 goes down, all traffic is automatically routed to Server 2.</p>
+      </div>
+      <div class="compare-card good">
+        <div class="compare-label green">Benefit</div>
+        <h3>Auto-Scaling</h3>
+        <p>Add new servers anytime — the load balancer routes to them automatically.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 5: DB Replication -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-green">🔄</div>
+      <h2 class="section-title">Database Replication</h2>
+    </div>
+
+    <p>Based on the master/slave model. Writes go to master; reads are distributed across slave replicas.</p>
+
+    <div class="diagram">       Writes only
+Client ──────→ Master DB
+                  │
+       async replication
+        ┌─────────┼─────────┐
+        ▼         ▼         ▼
+     Slave 1   Slave 2   Slave 3
+    (reads)   (reads)   (reads)</div>
+
+    <table class="data-table">
+      <thead><tr><th>Benefit</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Performance</td><td>Writes on master only; reads distributed across slaves</td></tr>
+        <tr><td>Reliability</td><td>Data preserved even if one server is destroyed</td></tr>
+        <tr><td>High Availability</td><td>Website stays up even if a DB node goes offline</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Failure handling:</strong> If the master goes offline, a slave is promoted to master — though data recovery scripts may be needed for sync gaps.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 6: Cache -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-amber">🚀</div>
+      <h2 class="section-title">Caching</h2>
+    </div>
+
+    <p>A temporary storage layer for expensive or frequently accessed data. Uses a <strong>read-through</strong> strategy.</p>
+
+    <div class="diagram">Web Server
+    │
+    ├── Check Cache ──(hit)──→ Return to Client
+    │        │
+    │       (miss)
+    │        ▼
+    └── Query DB → Store in Cache → Return to Client</div>
+
+    <table class="data-table">
+      <thead><tr><th>Consideration</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td>When to use</td><td>Data read frequently, modified infrequently</td></tr>
+        <tr><td>Expiration</td><td>Balance — too short overloads DB, too long gives stale data</td></tr>
+        <tr><td>Consistency</td><td>Keeping cache and DB in sync across regions is hard</td></tr>
+        <tr><td>Eviction Policy</td><td>LRU (most popular), LFU, FIFO</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>⚠️ Warning:</strong> Cache is volatile — never store critical persistent data exclusively in cache!
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 7: CDN -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🌐</div>
+      <h2 class="section-title">Content Delivery Network (CDN)</h2>
+    </div>
+
+    <p>A geographically dispersed network that serves <strong>static content</strong> (JS, CSS, images, videos) from the edge server closest to the user.</p>
+
+    <div class="flow">
+      <div class="flow-step"><span class="flow-num">1</span><div>User requests <code>image.png</code> via CDN URL</div></div>
+      <div class="flow-step"><span class="flow-num">2</span><div>CDN checks its edge cache; if miss, fetches from origin server</div></div>
+      <div class="flow-step"><span class="flow-num">3</span><div>Origin returns the file with an optional TTL header</div></div>
+      <div class="flow-step"><span class="flow-num">4</span><div>CDN caches and returns to user; subsequent requests are served from cache</div></div>
+    </div>
+
+    <div class="callout info">
+      <strong>File Invalidation:</strong> Use CDN API or URL versioning (<code>image.png?v=2</code>) to bust stale caches.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 8: Stateless -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-green">🔗</div>
+      <h2 class="section-title">Stateless Web Tier</h2>
+    </div>
+
+    <p>Move session state <em>out</em> of web servers into persistent shared storage (Redis, NoSQL).</p>
+
+    <div class="compare-grid">
+      <div class="compare-card bad">
+        <div class="compare-label red">❌ Stateful (Bad)</div>
+        <h3>Sticky Sessions</h3>
+        <p>User A must always hit Server 1 because that's where their session lives. Hard to scale, single point of failure.</p>
+        <div class="diagram" style="margin-top:12px;font-size:11px;">User A → Server 1 (session here)
+User B → Server 2 (session here)</div>
+      </div>
+      <div class="compare-card good">
+        <div class="compare-label green">✅ Stateless (Good)</div>
+        <h3>Shared State Store</h3>
+        <p>Any web server can handle any user. Sessions live in a shared data store like Redis.</p>
+        <div class="diagram" style="margin-top:12px;font-size:11px;">User A → Any Server → Redis
+User B → Any Server → Redis</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 9: Data Centers -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🌍</div>
+      <h2 class="section-title">Data Centers</h2>
+    </div>
+
+    <p>GeoDNS routes users to the nearest data center. On failure, 100% traffic is rerouted to the healthy DC.</p>
+
+    <div class="diagram">geoDNS
+  ├── US-East Data Center  (x% traffic)
+  └── US-West Data Center  ((100-x)% traffic)</div>
+
+    <table class="data-table">
+      <thead><tr><th>Challenge</th><th>Solution</th></tr></thead>
+      <tbody>
+        <tr><td>Traffic redirection</td><td>GeoDNS routes users to nearest data center</td></tr>
+        <tr><td>Data synchronization</td><td>Async multi-DC replication</td></tr>
+        <tr><td>Test & deployment</td><td>Automated deployment tools for consistency</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 10: Message Queue -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-pink">📨</div>
+      <h2 class="section-title">Message Queue</h2>
+    </div>
+
+    <p>A durable, in-memory component for <strong>asynchronous communication</strong>. Producers and consumers are decoupled and scaled independently.</p>
+
+    <div class="diagram">Producer (web servers)
+    ↓
+[Message Queue]
+    ↓
+Consumer / Workers</div>
+
+    <div class="compare-grid">
+      <div class="compare-card good">
+        <div class="compare-label green">Use Case</div>
+        <h3>Photo Processing Pipeline</h3>
+        <p>Web Server pushes jobs to queue. Photo Workers pull and process independently. Either side can scale or restart without breaking the other.</p>
+      </div>
+      <div class="compare-card good">
+        <div class="compare-label green">Advantage</div>
+        <h3>Loose Coupling</h3>
+        <p>System remains available even if one side is temporarily down. Producers and consumers scale independently based on load.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 11: DB Scaling -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-amber">🗃️</div>
+      <h2 class="section-title">Database Scaling</h2>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-label amber">Vertical</div>
+        <h3>Scale Up</h3>
+        <p>Add more CPU/RAM/Disk. AWS RDS offers up to <strong>24 TB RAM</strong> servers. Limited by hardware ceiling and cost. Still a single point of failure.</p>
+      </div>
+      <div class="compare-card">
+        <div class="compare-label blue">Horizontal</div>
+        <h3>Sharding</h3>
+        <p>Split DB into smaller shards — same schema, different rows. A sharding key like <code>user_id</code> determines which shard stores which data.</p>
+        <div class="diagram" style="margin-top:12px;font-size:11px;">user_id % 4 →
+  0 → Shard 0
+  1 → Shard 1
+  2 → Shard 2
+  3 → Shard 3</div>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead><tr><th>Sharding Challenge</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Resharding</td><td>When a shard runs out of space; use consistent hashing</td></tr>
+        <tr><td>Celebrity Problem</td><td>Hot shard overloaded by famous users; allocate dedicated shard</td></tr>
+        <tr><td>Join & De-normalization</td><td>Cross-shard JOINs are hard; de-normalize tables as a workaround</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 12: Summary -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-green">✅</div>
+      <h2 class="section-title">Summary: How to Scale to Millions</h2>
+    </div>
+
+    <ul class="checklist">
+      <li><span class="check-icon">✓</span>Keep the web tier stateless</li>
+      <li><span class="check-icon">✓</span>Build redundancy at every tier</li>
+      <li><span class="check-icon">✓</span>Cache data as aggressively as possible</li>
+      <li><span class="check-icon">✓</span>Support multiple data centers</li>
+      <li><span class="check-icon">✓</span>Host static assets in a CDN</li>
+      <li><span class="check-icon">✓</span>Scale data tier by sharding</li>
+      <li><span class="check-icon">✓</span>Split tiers into individual services</li>
+      <li><span class="check-icon">✓</span>Monitor system and automate deployments</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SECTION 13: References -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🔗</div>
+      <h2 class="section-title">Reference Materials</h2>
+    </div>
+    <div class="ref-grid">
+      <a class="ref-card" href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol" target="_blank">
+        <span class="ref-num">[1]</span> Hypertext Transfer Protocol
+      </a>
+      <a class="ref-card" href="https://blog.teamtreehouse.com/should-you-go-beyond-relational-databases" target="_blank">
+        <span class="ref-num">[2]</span> Beyond Relational Databases
+      </a>
+      <a class="ref-card" href="https://en.wikipedia.org/wiki/Replication_(computing)" target="_blank">
+        <span class="ref-num">[3]</span> Database Replication
+      </a>
+      <a class="ref-card" href="https://codeahoy.com/2017/08/11/caching-strategies-and-how-to-choose-the-right-one/" target="_blank">
+        <span class="ref-num">[6]</span> Caching Strategies
+      </a>
+      <a class="ref-card" href="https://en.wikipedia.org/wiki/Single_point_of_failure" target="_blank">
+        <span class="ref-num">[8]</span> Single Point of Failure
+      </a>
+      <a class="ref-card" href="https://netflixtechblog.com/active-active-for-multi-regional-resiliency-c47719f6685b" target="_blank">
+        <span class="ref-num">[11]</span> Netflix Active-Active Multi-Regional
+      </a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
